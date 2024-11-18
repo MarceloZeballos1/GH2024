@@ -5,10 +5,11 @@ $username = 'root';
 $password = '';
 
 try {
+    // Crear conexión PDO
     $conn = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    // Establecer el modo de error de PDO para que lance excepciones
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
-    echo "Connection failed: " . $e->getMessage();
-    exit();
+    echo "Conexión fallida: " . $e->getMessage();
 }
 ?>
