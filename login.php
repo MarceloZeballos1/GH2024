@@ -12,17 +12,18 @@ $error = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
-    $password = $_POST['password']; // Sin hash para simplificar
+    $password = $_POST['password']; // La contraseña ingresada por el usuario
 
-    // Consulta para verificar las credenciales
-    $stmt = $conn->prepare("SELECT * FROM users WHERE username = :username AND password = :password");
-    $stmt->execute(['username' => $username, 'password' => $password]);
+    // Consulta para obtener el hash de la contraseña almacenado en la base de datos
+    $stmt = $conn->prepare("SELECT * FROM users WHERE username = :username");
+    $stmt->execute(['username' => $username]);
     $user = $stmt->fetch();
 
-    if ($user) {
-        // Guardar datos básicos del usuario en la sesión
+    if ($user && password_verify($password, $user['password'])) {
+        // Si la contraseña coincide, guardamos los datos del usuario en la sesión
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['username'] = $user['username'];
+        $_SESSION['role'] = $user['role']; // Asigna el rol a la sesión
 
         // Redirigir a la página del usuario
         header("Location: user.php");
