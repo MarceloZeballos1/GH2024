@@ -1,6 +1,9 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
     <div class="container">
-        <a class="navbar-brand" href="dashboard.php">HRSJDD</a>
+        <!-- Cambiar el texto de la marca por una imagen -->
+        <a class="navbar-brand" href="dashboard.php">
+            <img src="./logo.png" alt="Logo" style="height: 90px;"> <!-- Ajusta el tamaño según sea necesario -->
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
