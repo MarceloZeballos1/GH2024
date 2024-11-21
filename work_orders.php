@@ -1,146 +1,121 @@
 <?php
 session_start();
-require 'includes/auth.php'; // Verifica si el usuario está autenticado
-require 'includes/db.php';
 
-// Crear orden de trabajo
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit();
+}
+
+require 'includes/db.php';
+require 'includes/header.php';
+
+// Verifica el rol del usuario para mostrar contenido adecuado
+$is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
+$user_id = $_SESSION['user_id'];
+
+// Manejo de creación de órdenes de trabajo
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_order'])) {
     $equipment_id = $_POST['equipment_id'];
     $description = $_POST['description'];
 
-    // Insertar orden de trabajo en la base de datos
-    $stmt = $db->prepare("INSERT INTO work_orders (user_id, equipment_id, description, status) VALUES (:user_id, :equipment_id, :description, 'pending')");
-    $stmt->execute([
-        'user_id' => $_SESSION['user']['id'],
-        'equipment_id' => $equipment_id,
-        'description' => $description
-    ]);
+    $stmt = $conn->prepare("INSERT INTO work_orders (user_id, equipment_id, description, status) VALUES (:user_id, :equipment_id, :description, 'pending')");
+    $stmt->execute(['user_id' => $user_id, 'equipment_id' => $equipment_id, 'description' => $description]);
+
+    $success_message = "Orden de trabajo creada exitosamente.";
 }
 
-// Obtener todas las órdenes de trabajo
-$orders = $db->query("SELECT * FROM work_orders ORDER BY created_at DESC")->fetchAll();
+// Obtener equipos disponibles para selección
+$equipments = $conn->query("SELECT * FROM equipments")->fetchAll();
 
-// Obtener equipos disponibles para la selección en el formulario
-$equipments = $db->query("SELECT * FROM equipments WHERE status = 'active'")->fetchAll();  // Filtrar solo los equipos activos
+// Obtener órdenes de trabajo según el rol
+if ($is_admin) {
+    $orders = $conn->query("SELECT wo.*, u.username, e.name as equipment_name FROM work_orders wo
+                            JOIN users u ON wo.user_id = u.id
+                            JOIN equipments e ON wo.equipment_id = e.id")->fetchAll();
+} else {
+    $stmt = $conn->prepare("SELECT wo.*, e.name as equipment_name FROM work_orders wo
+                            JOIN equipments e ON wo.equipment_id = e.id
+                            WHERE wo.user_id = :user_id");
+    $stmt->execute(['user_id' => $user_id]);
+    $orders = $stmt->fetchAll();
+}
 ?>
 
+
+
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Órdenes de Trabajo - HRSJDD</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 0;
-        }
-        header, footer {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 10px;
-        }
-        main {
-            padding: 20px;
-        }
-        h1 {
-            color: #333;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border: 1px solid #ddd;
-        }
-        th {
-            background-color: #4CAF50;
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-        form {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-        }
-        label {
-            font-weight: bold;
-        }
-        select, textarea, button {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-    </style>
+    <title>Órdenes de Trabajo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-    <?php include 'includes/header.php'; ?>
-    <main>
-        <h1>Órdenes de Trabajo</h1>
-        
-        <!-- Formulario para crear una orden de trabajo -->
-        <section>
-            <h2>Crear Nueva Orden de Trabajo</h2>
-            <form method="POST">
-                <label for="equipment_id">Seleccionar Equipo:</label>
-                <select name="equipment_id" id="equipment_id" required>
-                    <option value="">Selecciona un equipo</option>
-                    <?php foreach ($equipments as $equipment): ?>
-                        <option value="<?php echo $equipment['id']; ?>">
-                            <?php echo $equipment['name'] . ' - ' . $equipment['type']; ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-                
-                <label for="description">Descripción:</label>
-                <textarea name="description" id="description" required></textarea>
-                
-                <button type="submit">Crear Orden de Trabajo</button>
-            </form>
-        </section>
+<body class="bg-light">
+    <div class="container py-4">
+        <h1 class="mb-4">Gestión de Órdenes de Trabajo</h1>
 
-        <!-- Tabla de órdenes de trabajo pendientes -->
-        <section>
-            <h2>Órdenes de Trabajo Pendientes</h2>
-            <table>
-                <tr>
-                    <th>ID</th>
-                    <th>Descripción</th>
-                    <th>Status</th>
-                    <th>Fecha de Creación</th>
-                </tr>
-                <?php foreach ($orders as $order): ?>
-                <tr>
-                    <td><?php echo $order['id']; ?></td>
-                    <td><?php echo $order['description']; ?></td>
-                    <td><?php echo ucfirst($order['status']); ?></td>
-                    <td><?php echo $order['created_at']; ?></td>
-                </tr>
-                <?php endforeach; ?>
-            </table>
-        </section>
-    </main>
-    <?php include 'includes/footer.php'; ?>
+        <!-- Mostrar mensaje de éxito -->
+        <?php if (isset($success_message)): ?>
+            <div class="alert alert-success"><?= $success_message; ?></div>
+        <?php endif; ?>
+
+        <!-- Lista de Órdenes de Trabajo -->
+        <div class="card mb-4">
+            <div class="card-header">Órdenes de Trabajo</div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Equipo</th>
+                            <th>Descripción</th>
+                            <th>Estado</th>
+                            <?php if ($is_admin): ?>
+                                <th>Usuario</th>
+                            <?php endif; ?>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($orders as $order): ?>
+                            <tr>
+                                <td><?= $order['id']; ?></td>
+                                <td><?= $order['equipment_name']; ?></td>
+                                <td><?= $order['description']; ?></td>
+                                <td><?= $order['status']; ?></td>
+                                <?php if ($is_admin): ?>
+                                    <td><?= $order['username']; ?></td>
+                                <?php endif; ?>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Crear nueva Orden de Trabajo (visible solo para usuarios normales) -->
+        <?php if (!$is_admin): ?>
+            <div class="card">
+                <div class="card-header">Crear Nueva Orden de Trabajo</div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="equipment" class="form-label">Equipo</label>
+                            <select class="form-select" id="equipment" name="equipment_id" required>
+                                <?php foreach ($equipments as $equipment): ?>
+                                    <option value="<?= $equipment['id']; ?>"><?= $equipment['name']; ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Descripción del Trabajo</label>
+                            <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" name="create_order" class="btn btn-primary">Crear Orden</button>
+                    </form>
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
 </body>
 </html>

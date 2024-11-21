@@ -1,14 +1,10 @@
 <?php
 session_start();
-require 'includes/db.php';
+require 'includes/db.php'; // Asegúrate de que esta conexión funcione correctamente
 
-// Si el usuario ya inició sesión, redirige según su rol
+// Si el usuario ya inició sesión, redirige
 if (isset($_SESSION['user_id'])) {
-    if ($_SESSION['role'] === 'admin') {
-        header("Location: admin.php");
-    } else {
-        header("Location: user.php");
-    }
+    header("Location: user.php");
     exit();
 }
 
@@ -16,7 +12,7 @@ $error = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
-    $password = md5($_POST['password']); // Puedes usar una función más segura como password_hash() en el futuro
+    $password = $_POST['password']; // Sin hash para simplificar
 
     // Consulta para verificar las credenciales
     $stmt = $conn->prepare("SELECT * FROM users WHERE username = :username AND password = :password");
@@ -24,20 +20,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user = $stmt->fetch();
 
     if ($user) {
-        // Guardar datos del usuario en la sesión
+        // Guardar datos básicos del usuario en la sesión
         $_SESSION['user_id'] = $user['id'];
-        $_SESSION['role'] = $user['role'];
         $_SESSION['username'] = $user['username'];
 
-        // Redirigir según el rol del usuario
-        if ($user['role'] === 'admin') {
-            header("Location: admin.php");
-        } else {
-            header("Location: user.php");
-        }
+        // Redirigir a la página del usuario
+        header("Location: user.php");
         exit();
     } else {
-        $error = "Credenciales inválidas. Por favor, inténtalo nuevamente.";
+        $error = "Credenciales inválidas.";
     }
 }
 ?>
@@ -79,10 +70,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <label for="password" class="form-label">Contraseña</label>
                     <input type="password" class="form-control" id="password" name="password" required>
                 </div>
-                <button type="submit" class="btn btn-primary w-100">Login</button>
+                <button type="submit" class="btn btn-primary w-100">Ingresar</button>
             </form>
         </div>
     </div>
 </body>
 </html>
-
