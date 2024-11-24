@@ -23,6 +23,9 @@ $pending_maintenances = $conn->query("SELECT COUNT(*) FROM mantenimiento_program
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
+    <SCRIPT LANGUAGE="JavaScript">
+    history.forward()
+    </SCRIPT>
     <?php include 'includes/header.php'; ?>
     <div class="container mt-4">
         <h1>Admin Panel</h1>
