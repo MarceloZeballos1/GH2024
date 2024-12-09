@@ -11,7 +11,7 @@ require 'includes/header.php';
 
 // Procesar datos del formulario
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $procedure_id = $_POST['procedure_id'];
+    $equipment_id = $_POST['equipment_id'];
     $equipment_type = $_POST['equipment_type'];
     $equipment_name = $_POST['equipment_name'];
     $risk_score = $_POST['risk_score'];
@@ -19,21 +19,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mp_verifications = $_POST['mp_verifications'];
     $procedure_details = $_POST['procedure_details'];
 
-    $stmt = $conn->prepare("INSERT INTO procedures (id, equipment_type, equipment_name, risk_score, safety_inspections, mp_verifications, procedure_details) 
-                            VALUES (:id, :equipment_type, :equipment_name, :risk_score, :safety_inspections, :mp_verifications, :procedure_details)");
+    // Consulta SQL corregida
+    $stmt = $conn->prepare("INSERT INTO procedure_forms 
+        (equipment_id, type, equipment_name, risk_score, safety_inspections_per_year, maintenance_verifications_per_year, procedures) 
+        VALUES 
+        (:equipment_id, :type, :equipment_name, :risk_score, :safety_inspections_per_year, :maintenance_verifications_per_year, :procedures)");
+
     $stmt->execute([
-        'id' => $procedure_id,
-        'equipment_type' => $equipment_type,
+        'equipment_id' => $equipment_id,
+        'type' => $equipment_type,
         'equipment_name' => $equipment_name,
         'risk_score' => $risk_score,
-        'safety_inspections' => $safety_inspections,
-        'mp_verifications' => $mp_verifications,
-        'procedure_details' => $procedure_details,
+        'safety_inspections_per_year' => $safety_inspections,
+        'maintenance_verifications_per_year' => $mp_verifications,
+        'procedures' => $procedure_details,
     ]);
 
     $success_message = "Modelo de procedimiento registrado exitosamente.";
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -53,8 +58,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <form method="POST">
             <div class="mb-3">
-                <label for="procedure_id" class="form-label">ID</label>
-                <input type="text" class="form-control" id="procedure_id" name="procedure_id" required>
+                <label for="equipment_id" class="form-label">ID</label>
+                <input type="text" class="form-control" id="equipment_id" name="equipment_id" required>
             </div>
             <div class="mb-3">
                 <label for="equipment_type" class="form-label">Tipo de Equipo</label>

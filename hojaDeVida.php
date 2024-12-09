@@ -93,7 +93,7 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <tr>
                         <th>ID</th>
                         <th>Unidad</th>
-                        <th>Fecha y Hora</th>
+                        <th>Fecha Hora</th>
                         <th>Clínico/Técnico</th>
                         <th>Ubicación</th>
                         <th>Descripción del Problema</th>
@@ -102,7 +102,6 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <th>Tarea Realizada</th>
                         <th>¿Resuelto?</th>
                         <th>¿Tareas Adicionales?</th>
-                        <th>Seguimiento</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -110,17 +109,16 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <?php foreach ($orders as $order): ?>
                             <tr>
                                 <td><?= htmlspecialchars($order['id']) ?></td>
-                                <td><?= htmlspecialchars($order['unit']) ?></td>
-                                <td><?= htmlspecialchars($order['date_time']) ?></td>
-                                <td><?= htmlspecialchars($order['technician']) ?></td>
-                                <td><?= htmlspecialchars($order['location']) ?></td>
+                                <td><?= htmlspecialchars($order['department']) ?></td>
+                                <td><?= htmlspecialchars($order['date']) ?></td>
+                                <td><?= htmlspecialchars($order['technician_name']) ?></td>
+                                <td><?= htmlspecialchars($order['device_location']) ?></td>
                                 <td><?= htmlspecialchars($order['problem_description']) ?></td>
                                 <td><?= htmlspecialchars($order['engineer_name']) ?></td>
                                 <td><?= htmlspecialchars($order['response_date']) ?></td>
-                                <td><?= htmlspecialchars($order['task_done']) ?></td>
+                                <td><?= htmlspecialchars($order['task_performed']) ?></td>
                                 <td><?= htmlspecialchars($order['resolved'] ? 'Sí' : 'No') ?></td>
                                 <td><?= htmlspecialchars($order['additional_tasks'] ? 'Sí' : 'No') ?></td>
-                                <td><?= htmlspecialchars($order['follow_up']) ?></td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>

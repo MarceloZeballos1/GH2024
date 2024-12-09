@@ -6,7 +6,7 @@ require 'includes/auth.php';
 // Consultas de datos
 $equipments_total = $conn->query("SELECT COUNT(*) FROM equipments")->fetchColumn();
 $orders_active = $conn->query("SELECT COUNT(*) FROM work_orders WHERE status != 'Completado'")->fetchColumn(); 
-$maintenance_alerts = $conn->query("SELECT COUNT(*) FROM maintenance_schedule WHERE DATE(schedule_date) <= CURDATE() AND status = 'Pendiente'")->fetchColumn();
+$maintenance_alerts = $conn->query("SELECT COUNT(*) FROM maintenance_schedule WHERE DATE(status) <= CURDATE() AND status = 'Pendiente'")->fetchColumn();
 
 // Consultas para obtener los equipos y su mantenimiento
 $equipments = $conn->query("SELECT * FROM equipments")->fetchAll();
@@ -66,7 +66,7 @@ $maintenance_schedule = $conn->query("SELECT * FROM maintenance_schedule WHERE s
                         </div>
                         <div class="card-body">
                             <p><strong>Status:</strong> <?= $equipment['status'] ?></p>
-                            <p><strong>Ubicación:</strong> <?= $equipment['location'] ?></p>
+                            <p><strong>Unidad:</strong> <?= $equipment['unidad'] ?></p>
 
                             <?php
                                 // Obtener el próximo mantenimiento del equipo

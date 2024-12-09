@@ -23,6 +23,7 @@ $role = isset($_SESSION['role']) ? $_SESSION['role'] : null;
                 <li class="nav-item"><a class="nav-link" href="kpi.php">KPI</a></li>
                 <li class="nav-item"><a class="nav-link" href="hojaDeVida.php">HDR</a></li>
                 <li class="nav-item"><a class="nav-link" href="reports.php">Reportes</a></li>
+                <li class="nav-item"><a class="nav-link" href="ficha_tecnica.php">Ficha Tecnica</a></li>
 
                 <!-- Mostrar Gestión de Usuarios solo si el rol es admin -->
                 <?php if ($role === 'admin'): ?>

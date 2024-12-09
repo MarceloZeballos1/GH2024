@@ -22,25 +22,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_schedule'])) {
     $replacement_parts_needed = $_POST['replacement_parts_needed'];
     $maintenance_date = $_POST['maintenance_date']; // Fecha de mantenimiento
 
-    // Actualiza el cronograma de mantenimiento en la base de datos
+    // Verificar si el tipo de mantenimiento es preventivo
     if ($maintenance_type === 'preventive') {
-        $stmt = $conn->prepare("UPDATE equipments SET maintenance_schedule = :schedule, maintenance_responsible = :responsible, replacement_parts_needed = :replacement, maintenance_date = :maintenance_date WHERE id = :id");
+        // Insertar o actualizar el cronograma de mantenimiento preventivo en la tabla `maintenance_schedule`
+        $stmt = $conn->prepare("INSERT INTO maintenance_schedule (equipment_id, schedule_date, next_maintenance, description, status) 
+                                VALUES (:equipment_id, :schedule_date, :next_maintenance, :description, 'Pendiente')");
         $stmt->execute([
-            'schedule' => $maintenance_schedule,
-            'responsible' => $maintenance_responsible,
-            'replacement' => $replacement_parts_needed,
-            'maintenance_date' => $maintenance_date,
-            'id' => $equipment_id
+            'equipment_id' => $equipment_id,
+            'schedule_date' => $maintenance_date,
+            'next_maintenance' => $maintenance_schedule,  // Fecha del próximo mantenimiento
+            'description' => $replacement_parts_needed,
         ]);
         $success_message = "Cronograma de mantenimiento preventivo actualizado exitosamente.";
     } else {
-        // Aquí puedes agregar lógica para el mantenimiento correctivo si es necesario
-        $stmt = $conn->prepare("UPDATE equipments SET maintenance_schedule = NULL, maintenance_responsible = :responsible, replacement_parts_needed = :replacement, maintenance_date = :maintenance_date WHERE id = :id");
+        // Si es mantenimiento correctivo, se debe actualizar la tabla `maintenance_schedule` con el mantenimiento correcto
+        $stmt = $conn->prepare("INSERT INTO maintenance_schedule (equipment_id, schedule_date, next_maintenance, description, status) 
+                                VALUES (:equipment_id, :schedule_date, NULL, :description, 'Pendiente')");
         $stmt->execute([
-            'responsible' => $maintenance_responsible,
-            'replacement' => $replacement_parts_needed,
-            'maintenance_date' => $maintenance_date,
-            'id' => $equipment_id
+            'equipment_id' => $equipment_id,
+            'schedule_date' => $maintenance_date,
+            'description' => $replacement_parts_needed,
         ]);
         $success_message = "Mantenimiento correctivo registrado. Cronograma preventivo eliminado.";
     }

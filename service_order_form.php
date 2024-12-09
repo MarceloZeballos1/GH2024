@@ -31,27 +31,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $followup_problem_solved = $_POST['followup_problem_solved'];
     $further_tasks_needed = $_POST['further_tasks_needed'];
 
-    $stmt = $conn->prepare("INSERT INTO service_orders (service_id, unit, date_time, reporter, device_location, problem_description, engineer_name, response_date_time, task_done, problem_solved, additional_tasks_needed, additional_work_date, followup_engineer_name, followup_date_time, followup_tasks_done, followup_problem_solved, further_tasks_needed) 
-                            VALUES (:service_id, :unit, :date_time, :reporter, :device_location, :problem_description, :engineer_name, :response_date_time, :task_done, :problem_solved, :additional_tasks_needed, :additional_work_date, :followup_engineer_name, :followup_date_time, :followup_tasks_done, :followup_problem_solved, :further_tasks_needed)");
-    $stmt->execute([
-        'service_id' => $service_id,
-        'unit' => $unit,
-        'date_time' => $date_time,
-        'reporter' => $reporter,
-        'device_location' => $device_location,
-        'problem_description' => $problem_description,
-        'engineer_name' => $engineer_name,
-        'response_date_time' => $response_date_time,
-        'task_done' => $task_done,
-        'problem_solved' => $problem_solved,
-        'additional_tasks_needed' => $additional_tasks_needed,
-        'additional_work_date' => $additional_work_date,
-        'followup_engineer_name' => $followup_engineer_name,
-        'followup_date_time' => $followup_date_time,
-        'followup_tasks_done' => $followup_tasks_done,
-        'followup_problem_solved' => $followup_problem_solved,
-        'further_tasks_needed' => $further_tasks_needed,
-    ]);
+    $stmt = $conn->prepare("INSERT INTO service_orders (equipment_id, department, date, technician_name, device_location, problem_description, response_date, engineer_name, task_performed, resolved, additional_tasks) 
+                        VALUES (:equipment_id, :department, :date, :technician_name, :device_location, :problem_description, :response_date, :engineer_name, :task_performed, :resolved, :additional_tasks)");
+$stmt->execute([
+    'equipment_id' => $service_id, // Aquí usas la variable service_id, pero ahora se mapea a equipment_id
+    'department' => $unit,  // Ajusta si necesario según la estructura de tu tabla
+    'date' => $date_time,  // Se usa el campo date que está en la tabla
+    'technician_name' => $reporter, // O puedes mapearlo con otro campo si es necesario
+    'device_location' => $device_location,
+    'problem_description' => $problem_description,
+    'response_date' => $response_date_time,
+    'engineer_name' => $engineer_name,
+    'task_performed' => $task_done,
+    'resolved' => ($problem_solved == "Sí") ? 1 : 0, // Para convertir Sí/No a 1/0
+    'additional_tasks' => $additional_tasks_needed,
+]);
+
 
     $success_message = "Orden de servicio registrada exitosamente.";
 }
@@ -105,10 +100,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="engineer_name" class="form-label">Nombre del Ingeniero</label>
                 <select class="form-select" id="engineer_name" name="engineer_name" required>
                     <?php
-                    $engineers = $conn->query("SELECT username FROM users WHERE role = 'engineer'")->fetchAll();
-                    foreach ($engineers as $engineer):
+                    // Cargar todos los usuarios, no solo los de tipo "engineer"
+                    $users = $conn->query("SELECT username FROM users")->fetchAll();
+                    foreach ($users as $user):
                     ?>
-                        <option value="<?= $engineer['username']; ?>"><?= $engineer['username']; ?></option>
+                        <option value="<?= $user['username']; ?>"><?= $user['username']; ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -143,8 +139,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="mb-3">
                 <label for="followup_engineer_name" class="form-label">Nombre del Ingeniero</label>
                 <select class="form-select" id="followup_engineer_name" name="followup_engineer_name" required>
-                    <?php foreach ($engineers as $engineer): ?>
-                        <option value="<?= $engineer['username']; ?>"><?= $engineer['username']; ?></option>
+                    <?php foreach ($users as $user): ?>
+                        <option value="<?= $user['username']; ?>"><?= $user['username']; ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -164,14 +160,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </select>
             </div>
             <div class="mb-3">
-                <label for="further_tasks_needed" class="form-label">¿Es necesario realizar tareas adicionales?</label>
+                <label for="further_tasks_needed" class="form-label">¿Se necesitan más tareas?</label>
                 <select class="form-select" id="further_tasks_needed" name="further_tasks_needed">
                     <option value="Sí">Sí</option>
                     <option value="No">No</option>
                 </select>
             </div>
-
-            <button type="submit" class="btn btn-primary">Registrar Orden de Servicio</button>
+            <button type="submit" class="btn btn-primary">Registrar Orden</button>
         </form>
     </div>
 </body>
