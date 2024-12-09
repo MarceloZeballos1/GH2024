@@ -1,13 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 4.9.0.1
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 21-11-2024 a las 07:02:17
--- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
+-- Tiempo de generación: 09-12-2024 a las 06:06:06
+-- Versión del servidor: 10.4.6-MariaDB
+-- Versión de PHP: 7.2.22
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -33,19 +34,7 @@ CREATE TABLE `accessories` (
   `name` varchar(100) NOT NULL,
   `description` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `accessories`
---
-
-INSERT INTO `accessories` (`id`, `equipment_id`, `name`, `description`, `created_at`) VALUES
-(1, 1, 'Electrodo ECG', 'Electrodos para medición del ECG', '2024-11-21 09:45:00'),
-(2, 2, 'Sonda Ultrasonido', 'Sonda para realizar estudios de ultrasonido', '2024-11-21 09:50:00'),
-(3, 3, 'Placa Radiográfica', 'Placa para uso en máquina de Rayos X', '2024-11-21 09:55:00'),
-(4, 1, 'Electrodo ECG', 'Electrodos para medición del ECG', '2024-11-21 09:45:00'),
-(5, 2, 'Sonda Ultrasonido', 'Sonda para realizar estudios de ultrasonido', '2024-11-21 09:50:00'),
-(6, 3, 'Placa Radiográfica', 'Placa para uso en máquina de Rayos X', '2024-11-21 09:55:00');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -58,7 +47,7 @@ CREATE TABLE `activity_logs` (
   `user_id` int(11) NOT NULL,
   `action` varchar(255) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -69,21 +58,35 @@ CREATE TABLE `activity_logs` (
 CREATE TABLE `equipments` (
   `id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
+  `marca` varchar(100) DEFAULT NULL,
+  `modelo` varchar(100) DEFAULT NULL,
+  `nro_serie` varchar(100) DEFAULT NULL,
   `description` text DEFAULT NULL,
   `status` enum('Operativo','En reparación','Fuera de servicio') DEFAULT 'Operativo',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `location` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `location` varchar(255) DEFAULT NULL,
+  `unidad` varchar(100) DEFAULT NULL,
+  `gestion_ingreso` year(4) DEFAULT NULL,
+  `tipo_equipo` enum('Terapeutico','Diagnostico','Analitico','De soporte vital') DEFAULT 'Diagnostico',
+  `caracteristicas_fisicas` text DEFAULT NULL,
+  `estado` enum('Nuevo','Usado','Reparado') DEFAULT 'Nuevo',
+  `requisitos_funcionamiento` text DEFAULT NULL,
+  `alimentacion_electrica` enum('110V','220V') DEFAULT '110V',
+  `proveedor_servicio_mantenimiento` varchar(255) DEFAULT NULL,
+  `proveedor_compra` varchar(255) DEFAULT NULL,
+  `ficha_tecnica_pdf` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Volcado de datos para la tabla `equipments`
 --
 
-INSERT INTO `equipments` (`id`, `name`, `description`, `status`, `created_at`, `location`) VALUES
-(1, 'ECG', 'Equipo para electrocardiogramas', 'Operativo', '2024-11-21 09:00:00', 'Sala de Cardiología'),
-(2, 'Ultrasonido', 'Dispositivo de ultrasonido para diagnósticos', 'En reparación', '2024-11-21 09:05:00', 'Unidad de Ecografía'),
-(3, 'Rayos X', 'Máquina para radiografías', 'Operativo', '2024-11-21 09:10:00', 'Sala de Radiología'),
-(4, 'Tomografía', 'Tomógrafo para estudios avanzados', 'Fuera de servicio', '2024-11-21 09:15:00', 'Sala de Tomografía');
+INSERT INTO `equipments` (`id`, `name`, `marca`, `modelo`, `nro_serie`, `description`, `status`, `created_at`, `location`, `unidad`, `gestion_ingreso`, `tipo_equipo`, `caracteristicas_fisicas`, `estado`, `requisitos_funcionamiento`, `alimentacion_electrica`, `proveedor_servicio_mantenimiento`, `proveedor_compra`, `ficha_tecnica_pdf`) VALUES
+(1, 'ECG', NULL, NULL, NULL, 'Equipo para electrocardiogramas', 'Operativo', '2024-11-21 09:00:00', 'Sala de Cardiología', 'Hemodiálisis', NULL, 'Diagnostico', NULL, 'Nuevo', NULL, '110V', NULL, NULL, NULL),
+(2, 'Ultrasonido', NULL, NULL, NULL, 'Dispositivo de ultrasonido para diagnósticos', 'En reparación', '2024-11-21 09:05:00', 'Unidad de Ecografía', NULL, NULL, 'Diagnostico', NULL, 'Nuevo', NULL, '110V', NULL, NULL, NULL),
+(3, 'Rayos X', NULL, NULL, NULL, 'Máquina para radiografías', 'Operativo', '2024-11-21 09:10:00', 'Sala de Radiología', NULL, NULL, 'Diagnostico', NULL, 'Nuevo', NULL, '110V', NULL, NULL, NULL),
+(4, 'Tomografía', NULL, NULL, NULL, 'Tomógrafo para estudios avanzados', 'Fuera de servicio', '2024-11-21 09:15:00', 'Sala de Tomografía', NULL, NULL, 'Diagnostico', NULL, 'Nuevo', NULL, '110V', NULL, NULL, NULL),
+(15, 'Maquina de Anestesia', 'awdaef', 'ffa', '213', NULL, 'Operativo', '2024-12-09 03:47:11', NULL, '213asda', 2015, 'Diagnostico', 'dsdgsdg', '', 'sfedfsef', '220V', 'fsdfsdf', 'sdgsdg', 'fichas_tecnicas/flow-e-v4.7-datasheet-es-nonus-mx-7554-rev01-es-non_us.pdf');
 
 -- --------------------------------------------------------
 
@@ -99,19 +102,38 @@ CREATE TABLE `maintenance_schedule` (
   `description` text DEFAULT NULL,
   `status` enum('Pendiente','Completado') DEFAULT 'Pendiente',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Volcado de datos para la tabla `maintenance_schedule`
 --
 
 INSERT INTO `maintenance_schedule` (`id`, `equipment_id`, `schedule_date`, `next_maintenance`, `description`, `status`, `created_at`) VALUES
-(1, 1, '2024-12-01', '2025-01-01', 'Mantenimiento preventivo del ECG', 'Pendiente', '2024-11-21 09:30:00'),
-(2, 2, '2024-11-25', '2024-12-25', 'Reparación de la máquina de ultrasonido', 'Pendiente', '2024-11-21 09:35:00'),
-(3, 3, '2024-12-05', '2025-01-05', 'Chequeo de máquina de Rayos X', 'Pendiente', '2024-11-21 09:40:00'),
-(4, 1, '2024-12-01', '2025-01-01', 'Mantenimiento preventivo del ECG', 'Pendiente', '2024-11-21 09:30:00'),
-(5, 2, '2024-11-25', '2024-12-25', 'Reparación de la máquina de ultrasonido', 'Pendiente', '2024-11-21 09:35:00'),
-(6, 3, '2024-12-05', '2025-01-05', 'Chequeo de máquina de Rayos X', 'Pendiente', '2024-11-21 09:40:00');
+(7, 1, '2024-12-10', NULL, 'Comprar componentes', 'Pendiente', '2024-12-09 04:08:28');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `procedure_forms`
+--
+
+CREATE TABLE `procedure_forms` (
+  `id` int(11) NOT NULL,
+  `equipment_id` varchar(50) NOT NULL,
+  `type` varchar(50) DEFAULT NULL,
+  `equipment_name` varchar(100) DEFAULT NULL,
+  `risk_score` varchar(255) DEFAULT NULL,
+  `safety_inspections_per_year` int(11) DEFAULT NULL,
+  `maintenance_verifications_per_year` int(11) DEFAULT NULL,
+  `procedures` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `procedure_forms`
+--
+
+INSERT INTO `procedure_forms` (`id`, `equipment_id`, `type`, `equipment_name`, `risk_score`, `safety_inspections_per_year`, `maintenance_verifications_per_year`, `procedures`) VALUES
+(1, '1234', 'Soporte Vital', 'Ventilador', '3', 2, 2, 'asdad');
 
 -- --------------------------------------------------------
 
@@ -124,7 +146,7 @@ CREATE TABLE `providers` (
   `name` varchar(100) NOT NULL,
   `contact_info` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Volcado de datos para la tabla `providers`
@@ -139,6 +161,67 @@ INSERT INTO `providers` (`id`, `name`, `contact_info`, `created_at`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `reception_forms`
+--
+
+CREATE TABLE `reception_forms` (
+  `id` int(11) NOT NULL,
+  `equipment_id` varchar(50) NOT NULL,
+  `technician_name` varchar(100) DEFAULT NULL,
+  `equipment_name` varchar(100) DEFAULT NULL,
+  `category` varchar(50) DEFAULT NULL,
+  `floor` varchar(50) DEFAULT NULL,
+  `unit` varchar(50) DEFAULT NULL,
+  `department` varchar(50) DEFAULT NULL,
+  `inventory_no` varchar(50) DEFAULT NULL,
+  `model` varchar(50) DEFAULT NULL,
+  `serial_no` varchar(50) DEFAULT NULL,
+  `provider` varchar(50) DEFAULT NULL,
+  `manufacturer` varchar(50) DEFAULT NULL,
+  `functional_units` varchar(50) DEFAULT NULL,
+  `function_score` int(11) DEFAULT NULL,
+  `risk_score` int(11) DEFAULT NULL,
+  `maintenance_score` int(11) DEFAULT NULL,
+  `reception_date` date DEFAULT NULL,
+  `installation_date` date DEFAULT NULL,
+  `warranty_date` date DEFAULT NULL,
+  `purchase_price` decimal(10,2) DEFAULT NULL,
+  `replacement_cost` decimal(10,2) DEFAULT NULL,
+  `useful_life` int(11) DEFAULT NULL,
+  `maintenance_schedule` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `service_orders`
+--
+
+CREATE TABLE `service_orders` (
+  `id` int(11) NOT NULL,
+  `equipment_id` varchar(50) NOT NULL,
+  `department` varchar(50) DEFAULT NULL,
+  `date` date DEFAULT NULL,
+  `technician_name` varchar(100) DEFAULT NULL,
+  `device_location` varchar(100) DEFAULT NULL,
+  `problem_description` text DEFAULT NULL,
+  `response_date` datetime DEFAULT NULL,
+  `engineer_name` varchar(100) DEFAULT NULL,
+  `task_performed` text DEFAULT NULL,
+  `resolved` tinyint(1) DEFAULT NULL,
+  `additional_tasks` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `service_orders`
+--
+
+INSERT INTO `service_orders` (`id`, `equipment_id`, `department`, `date`, `technician_name`, `device_location`, `problem_description`, `response_date`, `engineer_name`, `task_performed`, `resolved`, `additional_tasks`) VALUES
+(1, '123', 'Hemodialisis', '2024-12-08', 'Ariana Muñoz', 'Sala Negativa', 'asdasd', '2024-12-09 21:50:00', 'Ingeniero', 'Reparación', 1, 'Sí');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `service_sheets`
 --
 
@@ -149,7 +232,7 @@ CREATE TABLE `service_sheets` (
   `details` text NOT NULL,
   `completed` tinyint(1) DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Volcado de datos para la tabla `service_sheets`
@@ -173,17 +256,17 @@ CREATE TABLE `users` (
   `email` varchar(100) NOT NULL,
   `role` enum('admin','user') NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Volcado de datos para la tabla `users`
 --
 
 INSERT INTO `users` (`id`, `username`, `password`, `email`, `role`, `created_at`) VALUES
-(5, 'admin', '1234', 'admin@example.com', 'admin', '2024-11-21 04:33:27'),
-(6, 'user', '1234', 'admin@example.com', 'user', '2024-11-21 04:35:13'),
-(8, 'ari', '$2y$10$EcYfilZsilDhl1yecV0ug.DfZrAQse8ZPacXdy6i/fWEQrqrURSbS', 'ariana.munoz@ucb.edu.bo', 'admin', '2024-11-21 05:50:06'),
-(11, 'admin1', '$2y$10$ioZlFow00Ye/YjotOb1S3OdfwtkA/Qr4wPAE/7euIXhmxNLzneVoK', 'admin1@gmail.com', 'user', '2024-11-21 05:55:38');
+(5, '.', '1234', 'admin@example.com', 'admin', '2024-11-21 04:33:27'),
+(6, '..', '1234', 'admin@example.com', 'user', '2024-11-21 04:35:13'),
+(8, 'Ariana Muñoz', '$2y$10$EcYfilZsilDhl1yecV0ug.DfZrAQse8ZPacXdy6i/fWEQrqrURSbS', 'ariana.munoz@ucb.edu.bo', 'user', '2024-11-21 05:50:06'),
+(11, 'Ingeniero', '$2y$10$ioZlFow00Ye/YjotOb1S3OdfwtkA/Qr4wPAE/7euIXhmxNLzneVoK', 'admin1@gmail.com', 'admin', '2024-11-21 05:55:38');
 
 -- --------------------------------------------------------
 
@@ -198,7 +281,7 @@ CREATE TABLE `work_orders` (
   `description` text NOT NULL,
   `status` enum('Pendiente','En proceso','Completado') DEFAULT 'Pendiente',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Volcado de datos para la tabla `work_orders`
@@ -243,9 +326,27 @@ ALTER TABLE `maintenance_schedule`
   ADD KEY `equipment_id` (`equipment_id`);
 
 --
+-- Indices de la tabla `procedure_forms`
+--
+ALTER TABLE `procedure_forms`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indices de la tabla `providers`
 --
 ALTER TABLE `providers`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `reception_forms`
+--
+ALTER TABLE `reception_forms`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `service_orders`
+--
+ALTER TABLE `service_orders`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -290,19 +391,37 @@ ALTER TABLE `activity_logs`
 -- AUTO_INCREMENT de la tabla `equipments`
 --
 ALTER TABLE `equipments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `maintenance_schedule`
 --
 ALTER TABLE `maintenance_schedule`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT de la tabla `procedure_forms`
+--
+ALTER TABLE `procedure_forms`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `providers`
 --
 ALTER TABLE `providers`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT de la tabla `reception_forms`
+--
+ALTER TABLE `reception_forms`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `service_orders`
+--
+ALTER TABLE `service_orders`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `service_sheets`
@@ -314,7 +433,7 @@ ALTER TABLE `service_sheets`
 -- AUTO_INCREMENT de la tabla `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `work_orders`
