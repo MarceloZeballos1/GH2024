@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.0.1
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 09-12-2024 a las 06:06:06
--- Versión del servidor: 10.4.6-MariaDB
--- Versión de PHP: 7.2.22
+-- Tiempo de generación: 09-12-2024 a las 19:30:36
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -34,7 +33,7 @@ CREATE TABLE `accessories` (
   `name` varchar(100) NOT NULL,
   `description` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -47,7 +46,7 @@ CREATE TABLE `activity_logs` (
   `user_id` int(11) NOT NULL,
   `action` varchar(255) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -57,6 +56,7 @@ CREATE TABLE `activity_logs` (
 
 CREATE TABLE `equipments` (
   `id` int(11) NOT NULL,
+  `id_equipo` varchar(50) DEFAULT NULL,
   `name` varchar(100) NOT NULL,
   `marca` varchar(100) DEFAULT NULL,
   `modelo` varchar(100) DEFAULT NULL,
@@ -75,18 +75,19 @@ CREATE TABLE `equipments` (
   `proveedor_servicio_mantenimiento` varchar(255) DEFAULT NULL,
   `proveedor_compra` varchar(255) DEFAULT NULL,
   `ficha_tecnica_pdf` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Volcado de datos para la tabla `equipments`
 --
 
-INSERT INTO `equipments` (`id`, `name`, `marca`, `modelo`, `nro_serie`, `description`, `status`, `created_at`, `location`, `unidad`, `gestion_ingreso`, `tipo_equipo`, `caracteristicas_fisicas`, `estado`, `requisitos_funcionamiento`, `alimentacion_electrica`, `proveedor_servicio_mantenimiento`, `proveedor_compra`, `ficha_tecnica_pdf`) VALUES
-(1, 'ECG', NULL, NULL, NULL, 'Equipo para electrocardiogramas', 'Operativo', '2024-11-21 09:00:00', 'Sala de Cardiología', 'Hemodiálisis', NULL, 'Diagnostico', NULL, 'Nuevo', NULL, '110V', NULL, NULL, NULL),
-(2, 'Ultrasonido', NULL, NULL, NULL, 'Dispositivo de ultrasonido para diagnósticos', 'En reparación', '2024-11-21 09:05:00', 'Unidad de Ecografía', NULL, NULL, 'Diagnostico', NULL, 'Nuevo', NULL, '110V', NULL, NULL, NULL),
-(3, 'Rayos X', NULL, NULL, NULL, 'Máquina para radiografías', 'Operativo', '2024-11-21 09:10:00', 'Sala de Radiología', NULL, NULL, 'Diagnostico', NULL, 'Nuevo', NULL, '110V', NULL, NULL, NULL),
-(4, 'Tomografía', NULL, NULL, NULL, 'Tomógrafo para estudios avanzados', 'Fuera de servicio', '2024-11-21 09:15:00', 'Sala de Tomografía', NULL, NULL, 'Diagnostico', NULL, 'Nuevo', NULL, '110V', NULL, NULL, NULL),
-(15, 'Maquina de Anestesia', 'awdaef', 'ffa', '213', NULL, 'Operativo', '2024-12-09 03:47:11', NULL, '213asda', 2015, 'Diagnostico', 'dsdgsdg', '', 'sfedfsef', '220V', 'fsdfsdf', 'sdgsdg', 'fichas_tecnicas/flow-e-v4.7-datasheet-es-nonus-mx-7554-rev01-es-non_us.pdf');
+INSERT INTO `equipments` (`id`, `id_equipo`, `name`, `marca`, `modelo`, `nro_serie`, `description`, `status`, `created_at`, `location`, `unidad`, `gestion_ingreso`, `tipo_equipo`, `caracteristicas_fisicas`, `estado`, `requisitos_funcionamiento`, `alimentacion_electrica`, `proveedor_servicio_mantenimiento`, `proveedor_compra`, `ficha_tecnica_pdf`) VALUES
+(1, NULL, 'ECG', NULL, NULL, NULL, 'Equipo para electrocardiogramas', 'Operativo', '2024-11-21 09:00:00', 'Sala de Cardiología', 'Hemodiálisis', NULL, 'Diagnostico', NULL, 'Nuevo', NULL, '110V', NULL, NULL, NULL),
+(2, NULL, 'Ultrasonido', NULL, NULL, NULL, 'Dispositivo de ultrasonido para diagnósticos', 'En reparación', '2024-11-21 09:05:00', 'Unidad de Ecografía', NULL, NULL, 'Diagnostico', NULL, 'Nuevo', NULL, '110V', NULL, NULL, NULL),
+(3, NULL, 'Rayos X', NULL, NULL, NULL, 'Máquina para radiografías', 'Operativo', '2024-11-21 09:10:00', 'Sala de Radiología', NULL, NULL, 'Diagnostico', NULL, 'Nuevo', NULL, '110V', NULL, NULL, NULL),
+(4, NULL, 'Tomografía', NULL, NULL, NULL, 'Tomógrafo para estudios avanzados', 'Fuera de servicio', '2024-11-21 09:15:00', 'Sala de Tomografía', NULL, NULL, 'Diagnostico', NULL, 'Nuevo', NULL, '110V', NULL, NULL, NULL),
+(15, NULL, 'Maquina de Anestesia', 'awdaef', 'ffa', '213', NULL, 'Operativo', '2024-12-09 03:47:11', NULL, '213asda', '2015', 'Diagnostico', 'dsdgsdg', '', 'sfedfsef', '220V', 'fsdfsdf', 'sdgsdg', 'fichas_tecnicas/flow-e-v4.7-datasheet-es-nonus-mx-7554-rev01-es-non_us.pdf'),
+(16, 'A12', 'Ventilador', 'Cualquiera', 'Hola', '1234', NULL, 'Operativo', '2024-12-09 16:50:48', 'Sala de sdgsdf', 'Si', '2023', 'Diagnostico', 'agrhafdhg', '', 'asdvfcsdgf', '220V', 'fsdfsdf', 'sdgsdg', NULL);
 
 -- --------------------------------------------------------
 
@@ -102,7 +103,7 @@ CREATE TABLE `maintenance_schedule` (
   `description` text DEFAULT NULL,
   `status` enum('Pendiente','Completado') DEFAULT 'Pendiente',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `maintenance_schedule`
@@ -126,7 +127,7 @@ CREATE TABLE `procedure_forms` (
   `safety_inspections_per_year` int(11) DEFAULT NULL,
   `maintenance_verifications_per_year` int(11) DEFAULT NULL,
   `procedures` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Volcado de datos para la tabla `procedure_forms`
@@ -146,7 +147,7 @@ CREATE TABLE `providers` (
   `name` varchar(100) NOT NULL,
   `contact_info` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `providers`
@@ -189,7 +190,7 @@ CREATE TABLE `reception_forms` (
   `replacement_cost` decimal(10,2) DEFAULT NULL,
   `useful_life` int(11) DEFAULT NULL,
   `maintenance_schedule` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
@@ -210,7 +211,7 @@ CREATE TABLE `service_orders` (
   `task_performed` text DEFAULT NULL,
   `resolved` tinyint(1) DEFAULT NULL,
   `additional_tasks` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Volcado de datos para la tabla `service_orders`
@@ -232,7 +233,7 @@ CREATE TABLE `service_sheets` (
   `details` text NOT NULL,
   `completed` tinyint(1) DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `service_sheets`
@@ -256,7 +257,7 @@ CREATE TABLE `users` (
   `email` varchar(100) NOT NULL,
   `role` enum('admin','user') NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `users`
@@ -281,7 +282,7 @@ CREATE TABLE `work_orders` (
   `description` text NOT NULL,
   `status` enum('Pendiente','En proceso','Completado') DEFAULT 'Pendiente',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `work_orders`
@@ -391,7 +392,7 @@ ALTER TABLE `activity_logs`
 -- AUTO_INCREMENT de la tabla `equipments`
 --
 ALTER TABLE `equipments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `maintenance_schedule`
