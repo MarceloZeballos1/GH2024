@@ -10,6 +10,7 @@ require 'includes/db.php';
 require 'includes/header.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $id_equipo = $_POST['id_equipo'];  // Nuevo ID personalizado
     $equipo_medico = $_POST['equipo_medico'];
     $marca = $_POST['marca'];
     $modelo = $_POST['modelo'];
@@ -19,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tipo_equipo = $_POST['tipo_equipo'];
     $caracteristicas_fisicas = $_POST['caracteristicas_fisicas'];
     $estado = $_POST['estado'];
-    $ubicacion = $_POST['location'];  // Nuevo campo para ubicación
+    $ubicacion = $_POST['location'];
     $requisitos_funcionamiento = $_POST['requisitos_funcionamiento'];
     $alimentacion_electrica = $_POST['alimentacion_electrica'];
     $proveedor_mantenimiento = $_POST['proveedor_mantenimiento'];
@@ -27,12 +28,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $stmt = $conn->prepare("
     INSERT INTO equipments 
-    (name, marca, modelo, nro_serie, unidad, gestion_ingreso, tipo_equipo, caracteristicas_fisicas, estado, location, requisitos_funcionamiento, alimentacion_electrica, proveedor_servicio_mantenimiento, proveedor_compra)
+    (id_equipo, name, marca, modelo, nro_serie, unidad, gestion_ingreso, tipo_equipo, caracteristicas_fisicas, estado, location, requisitos_funcionamiento, alimentacion_electrica, proveedor_servicio_mantenimiento, proveedor_compra)
     VALUES 
-    (:name, :marca, :modelo, :nro_serie, :unidad, :gestion_ingreso, :tipo_equipo, :caracteristicas_fisicas, :estado, :ubicacion, :requisitos_funcionamiento, :alimentacion_electrica, :proveedor_mantenimiento, :proveedor_compra)
+    (:id_equipo, :name, :marca, :modelo, :nro_serie, :unidad, :gestion_ingreso, :tipo_equipo, :caracteristicas_fisicas, :estado, :ubicacion, :requisitos_funcionamiento, :alimentacion_electrica, :proveedor_mantenimiento, :proveedor_compra)
     ");
 
     $stmt->execute([
+        'id_equipo' => $id_equipo,  
         'name' => $equipo_medico,
         'marca' => $marca,
         'modelo' => $modelo,
@@ -42,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'tipo_equipo' => $tipo_equipo,
         'caracteristicas_fisicas' => $caracteristicas_fisicas,
         'estado' => $estado,
-        'ubicacion' => $location,  // Inserción de ubicación
+        'ubicacion' => $ubicacion,
         'requisitos_funcionamiento' => $requisitos_funcionamiento,
         'alimentacion_electrica' => $alimentacion_electrica,
         'proveedor_mantenimiento' => $proveedor_mantenimiento,
@@ -70,6 +72,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endif; ?>
 
         <form method="POST">
+            <div class="mb-3">
+                <label for="id_equipo" class="form-label">ID del Equipo</label>
+                <input type="text" class="form-control" id="id_equipo" name="id_equipo">
+            </div>
             <div class="mb-3">
                 <label for="name" class="form-label">Equipo Médico</label>
                 <input type="text" class="form-control" id="name" name="equipo_medico" required>
